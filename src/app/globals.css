@@ -1,0 +1,263 @@
+@import "tailwindcss";
+
+/*
+ * Design system Dartfy — "noite neon"
+ *   Fundo escuro azul-noite, o neon entra como ACENTO (CTA, foco, estados),
+ *   nunca como fundo de tudo. Superfícies em camadas translúcidas.
+ *
+ *   neon     #ff2bd6  magenta da marca (CTA, destaque)
+ *   violeta  #8b5cf6  meio do gradiente
+ *   anil     #5b7cfa  fim do gradiente / links
+ *   ok       #34e5a0  confirmado, check-in, pago
+ *   alerta   #ffb547  pendente
+ *   erro     #ff5c7a  recusado / erro
+ */
+@theme {
+  --color-noite: #07061a;
+  --color-breu: #0e0c27;
+  --color-superficie: #151236;
+  --color-elevado: #1d1945;
+  --color-linha: rgb(255 255 255 / 0.08);
+
+  --color-texto: #f4f2ff;
+  --color-suave: #b4afd6;
+  --color-apagado: #7d78a3;
+
+  --color-neon: #ff2bd6;
+  --color-violeta: #8b5cf6;
+  --color-anil: #5b7cfa;
+  --color-ok: #34e5a0;
+  --color-alerta: #ffb547;
+  --color-erro: #ff5c7a;
+
+  /* Cor das sobreposições translúcidas (bg-tinta/5, ring-tinta/10…): branco no escuro, preto no claro. */
+  --color-tinta: #ffffff;
+  /* Texto sobre o botão principal (bg-brand). */
+  --color-sobre-brand: #ffffff;
+
+  --font-display: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-rise: rise 0.5s var(--ease-soft) both;
+  --animate-pop: pop 0.35s var(--ease-soft) both;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+/*
+ * ── TEMAS ───────────────────────────────────────────────────────────
+ *  dartfy  (padrão) neon noturno — tokens do @theme acima
+ *  darkfy  escuro minimalista, monocromático, sem gradiente/brilho
+ *  whitefy claro minimalista
+ *  Escolhido em Perfil → Aparência; salvo no cookie "dartfy-theme" e
+ *  aplicado em <html data-theme> (src/lib/theme.ts).
+ */
+[data-theme="darkfy"] {
+  --color-noite: #0b0b0c;
+  --color-breu: #121214;
+  --color-superficie: #17171a;
+  --color-elevado: #1e1e22;
+  --color-linha: rgb(255 255 255 / 0.08);
+  --color-texto: #f4f4f5;
+  --color-suave: #a1a1aa;
+  --color-apagado: #71717a;
+  --color-neon: #f4f4f5;
+  --color-violeta: #d4d4d8;
+  --color-anil: #a1a1aa;
+  --color-ok: #4ade80;
+  --color-alerta: #fbbf24;
+  --color-erro: #f87171;
+  --color-tinta: #ffffff;
+  --color-sobre-brand: #0b0b0c;
+  --brand-fill: #f4f4f5;
+  --cover-opacity: 0.35;
+}
+
+[data-theme="whitefy"] {
+  color-scheme: light;
+  --color-noite: #ffffff;
+  --color-breu: #fafafa;
+  --color-superficie: #f4f4f5;
+  --color-elevado: #ffffff;
+  --color-linha: rgb(0 0 0 / 0.08);
+  --color-texto: #18181b;
+  --color-suave: #52525b;
+  --color-apagado: #8a8a93;
+  --color-neon: #18181b;
+  --color-violeta: #3f3f46;
+  --color-anil: #52525b;
+  --color-ok: #16a34a;
+  --color-alerta: #d97706;
+  --color-erro: #dc2626;
+  --color-tinta: #000000;
+  --color-sobre-brand: #ffffff;
+  --brand-fill: #18181b;
+  --cover-opacity: 0.22;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--color-noite);
+    color: var(--color-texto);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    /* A página nunca rola de lado; só as faixas horizontais (datas, chips) rolam. */
+    overflow-x: clip;
+    overscroll-behavior-x: none;
+  }
+
+  html { overflow-x: clip; }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection { background: var(--color-neon); color: var(--color-sobre-brand); }
+  [data-theme="whitefy"] { color-scheme: light; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-neon);
+    outline-offset: 2px;
+    border-radius: 10px;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.6); }
+  [data-theme="whitefy"] input::-webkit-calendar-picker-indicator { filter: opacity(0.6); }
+}
+
+@layer components {
+  /* Gradiente da marca */
+  .bg-brand { background-image: linear-gradient(100deg, var(--color-neon) 0%, var(--color-violeta) 55%, var(--color-anil) 100%); }
+  .text-brand {
+    background-image: linear-gradient(100deg, var(--color-neon), var(--color-violeta) 50%, var(--color-anil));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-neon { box-shadow: 0 6px 18px -10px rgb(255 43 214 / 0.5); }
+
+  /* Temas minimalistas: cor sólida, sem gradiente nem brilho */
+  [data-theme="darkfy"] .bg-brand,
+  [data-theme="whitefy"] .bg-brand { background-image: none; background-color: var(--brand-fill); }
+  [data-theme="darkfy"] .text-brand,
+  [data-theme="whitefy"] .text-brand { background-image: none; color: var(--color-texto); }
+  [data-theme="darkfy"] .glow-neon,
+  [data-theme="whitefy"] .glow-neon { box-shadow: none; }
+  [data-theme="darkfy"] .ambient,
+  [data-theme="whitefy"] .ambient { background: var(--color-noite); }
+  .venue-cover { opacity: var(--cover-opacity, 1); }
+
+  /* Superfície padrão (cards) */
+  .surface {
+    background: linear-gradient(180deg, color-mix(in srgb, var(--color-tinta) 4.5%, transparent), color-mix(in srgb, var(--color-tinta) 2%, transparent));
+    border: 1px solid var(--color-linha);
+    border-radius: var(--radius-card);
+  }
+  [data-theme="whitefy"] .surface { background: #ffffff; box-shadow: 0 1px 2px rgb(0 0 0 / 0.04); }
+
+  /* Logo: as três versões são renderizadas; o tema mostra só a dele. */
+  .logo-variant { display: none; }
+  :root:not([data-theme]) .logo-dartfy,
+  [data-theme="dartfy"] .logo-dartfy,
+  [data-theme="darkfy"] .logo-darkfy,
+  [data-theme="whitefy"] .logo-whitefy { display: block; }
+
+  /* Rótulo pequeno — em caixa normal, sem tracking exagerado. */
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-apagado);
+  }
+
+  /* Fundo ambiente do app: brilho neon discreto + linha do horizonte */
+  .ambient {
+    background:
+      radial-gradient(60% 40% at 15% 0%, rgb(255 43 214 / 0.16), transparent 70%),
+      radial-gradient(55% 35% at 100% 10%, rgb(91 124 250 / 0.16), transparent 70%),
+      var(--color-noite);
+  }
+
+  /* Faixa com rolagem horizontal: o gesto fica preso nela e não arrasta a página. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* ── Mapa (Leaflet) ── */
+  .dartfy-map { background: #0b0a1f; font-family: var(--font-sans); }
+  /* Tema noturno sobre os tiles claros do OpenStreetMap */
+  .dartfy-map .leaflet-tile-pane { filter: invert(1) hue-rotate(200deg) brightness(0.8) contrast(0.95) saturate(0.45); }
+  [data-theme="darkfy"] .dartfy-map .leaflet-tile-pane { filter: invert(1) grayscale(1) brightness(0.75) contrast(0.95); }
+  [data-theme="whitefy"] .dartfy-map .leaflet-tile-pane { filter: grayscale(1) contrast(0.95) brightness(1.03); }
+  [data-theme="whitefy"] .dartfy-map { background: #f4f4f5; }
+  .dartfy-map .leaflet-control-attribution {
+    background: color-mix(in srgb, var(--color-noite) 75%, transparent);
+    color: var(--color-apagado);
+    font-size: 9px;
+    border-top-left-radius: 8px;
+  }
+  .dartfy-map .leaflet-control-attribution a { color: var(--color-suave); }
+  .dartfy-map .leaflet-bar { border: 0; box-shadow: none; }
+  .dartfy-map .leaflet-bar a {
+    background: var(--color-elevado);
+    color: var(--color-texto);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    width: 34px; height: 34px; line-height: 32px;
+  }
+  .dartfy-map .leaflet-bar a:first-child { border-radius: 12px 12px 0 0; }
+  .dartfy-map .leaflet-bar a:last-child { border-radius: 0 0 12px 12px; }
+
+  .dartfy-pin {
+    position: relative;
+    width: 40px; height: 40px;
+    border-radius: 14px 14px 14px 4px;
+    transform: rotate(-45deg);
+    background: linear-gradient(140deg, var(--a), var(--b));
+    border: 2px solid rgb(255 255 255 / 0.85);
+    box-shadow: 0 6px 18px -4px rgb(0 0 0 / 0.7);
+    display: grid; place-items: center;
+    transition: transform 0.2s var(--ease-soft), box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .dartfy-pin span {
+    transform: rotate(45deg);
+    font: 800 13px/1 var(--font-display);
+    color: white;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  }
+  .dartfy-pin.is-selected {
+    transform: rotate(-45deg) scale(1.2);
+    border-color: white;
+    box-shadow: 0 0 0 4px rgb(255 43 214 / 0.45), 0 10px 26px -6px rgb(255 43 214 / 0.8);
+  }
+
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.75rem); }
+}
