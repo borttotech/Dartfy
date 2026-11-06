@@ -1,12 +1,34 @@
 import type { Metadata, Viewport } from "next";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { cookies } from "next/headers";
 import { SITE_URL, site } from "@/config/site";
 import { parseTheme, THEME_COOKIE } from "@/lib/theme";
 import "./globals.css";
 
-const outfit = Outfit({ subsets: ["latin"], weight: ["500", "600", "700", "800"], variable: "--font-outfit", display: "swap" });
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-jakarta", display: "swap" });
+/*
+ * Fontes locais (src/app/fonts, licença OFL). Não usar next/font/google:
+ * ele baixa do Google durante o build e falha/trava em hosts sem esse acesso (ex.: Hostinger).
+ */
+const outfit = localFont({
+  src: [
+    { path: "./fonts/outfit-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/outfit-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/outfit-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/outfit-800.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-outfit",
+  display: "swap",
+});
+const jakarta = localFont({
+  src: [
+    { path: "./fonts/jakarta-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/jakarta-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/jakarta-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/jakarta-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-jakarta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
