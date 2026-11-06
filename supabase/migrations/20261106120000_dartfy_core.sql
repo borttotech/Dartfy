@@ -52,7 +52,8 @@ $$;
 create table dartfy.profiles (
   id          uuid primary key references auth.users (id) on delete cascade,
   name        text not null default '' check (char_length(name) <= 80),
-  phone       text not null unique check (phone ~ '^[1-9]{2}9[0-9]{8}$'),
+  -- Login é por e-mail e senha; o celular (WhatsApp) vem do cadastro.
+  phone       text unique check (phone is null or phone ~ '^[1-9]{2}9[0-9]{8}$'),
   email       text check (email is null or email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'),
   gender      dartfy.gender,
   birth_date  date check (birth_date is null or birth_date <= (current_date - interval '18 years')),
@@ -62,15 +63,20 @@ create table dartfy.profiles (
 create trigger profiles_updated_at before update on dartfy.profiles
   for each row execute function dartfy_private.set_updated_at();
 
--- Cria o perfil quando o usuário faz o primeiro login por SMS.
+-- Cria o perfil no cadastro (e-mail e senha). Nome, celular e nascimento vêm de
+-- signUp → options.data no formulário "Criar conta".
 create function dartfy_private.handle_new_user() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
-  if new.phone is not null then
-    insert into dartfy.profiles (id, phone)
-    values (new.id, right(regexp_replace(new.phone, '\D', '', 'g'), 11))
-    on conflict (id) do nothing;
-  end if;
+  insert into dartfy.profiles (id, email, name, phone, birth_date)
+  values (
+    new.id,
+    new.email,
+    left(coalesce(new.raw_user_meta_data ->> 'name', ''), 80),
+    nullif(regexp_replace(coalesce(new.raw_user_meta_data ->> 'phone', ''), '\D', '', 'g'), ''),
+    nullif(new.raw_user_meta_data ->> 'birth_date', '')::date
+  )
+  on conflict (id) do nothing;
   return new;
 end;
 $$;
