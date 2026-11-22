@@ -48,6 +48,12 @@ function findMeet(meetId: string) {
   return m;
 }
 
+function findMeetByCode(code: string) {
+  const m = db().meets.find((x) => x.code === code.toLowerCase());
+  if (!m) throw new DomainError("Convite não encontrado.");
+  return m;
+}
+
 export const demoRepository: DartfyRepository = {
   async getProfile(userId) {
     return clone(db().profiles.find((p) => p.id === userId) ?? null);
@@ -126,15 +132,15 @@ export const demoRepository: DartfyRepository = {
     m.status = "cancelled";
   },
 
-  async markInviteSeen(meetId, userId) {
-    const m = findMeet(meetId);
+  async markInviteSeen(code, userId) {
+    const m = findMeetByCode(code);
     if (guestOf(m, userId)) return;
     if (m.status !== "open") return;
     m.guests.push({ userId, role: "guest", status: "invited", respondedAt: null, checkedInAt: null });
   },
 
-  async respondInvite(meetId, userId, accept) {
-    const m = findMeet(meetId);
+  async respondInvite(code, userId, accept) {
+    const m = findMeetByCode(code);
     if (m.hostId === userId) throw new DomainError("Você é o anfitrião deste meet.");
     const block = joinBlockReason(m);
     if (block) throw new DomainError(block);

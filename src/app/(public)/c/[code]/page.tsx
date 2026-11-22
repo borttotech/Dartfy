@@ -40,7 +40,7 @@ export default async function InvitePage({ params }: Props) {
   if (user && meet.hostId === user.id) redirect(`/meets/${meet.id}`);
 
   // Registra que o convite foi aberto (aparece em "Convites" do usuário). Idempotente.
-  if (user && meet.status === "open") await repo().markInviteSeen(meet.id, user.id);
+  if (user && meet.status === "open") await repo().markInviteSeen(meet.code, user.id);
 
   const me = guestOf(meet, user?.id);
   const going = meet.people.filter(isGoing);

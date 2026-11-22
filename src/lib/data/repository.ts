@@ -30,8 +30,9 @@ export interface DartfyRepository {
 
   // Convite
   /** Registra que o usuário abriu o convite (aparece em "Convites"). Idempotente. */
-  markInviteSeen(meetId: string, userId: string): Promise<void>;
-  respondInvite(meetId: string, userId: string, accept: boolean): Promise<void>;
+  markInviteSeen(code: string, userId: string): Promise<void>;
+  /** Por código: quem ainda não está na lista não enxerga o meet pelo id (RLS). */
+  respondInvite(code: string, userId: string, accept: boolean): Promise<void>;
 
   // Fechamento e pagamento
   /** Anfitrião fecha a lista; gera a cobrança Pix com o valor pelo número de pessoas. */

@@ -18,7 +18,7 @@ export async function respondInviteAction(_: ActionState, form: FormData): Promi
   if (!meet) return { ok: false, message: "Convite não encontrado." };
 
   try {
-    await repo().respondInvite(meet.id, user.id, accept);
+    await repo().respondInvite(meet.code, user.id, accept);
   } catch (e) {
     if (e instanceof DomainError) return { ok: false, message: e.message };
     throw e;

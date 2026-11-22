@@ -11,7 +11,7 @@ export type Profile = {
   birthDate: string | null; // yyyy-mm-dd
 };
 
-export type VenueCategory = "bar" | "pub" | "restaurante" | "cafe";
+export type VenueCategory = "bar" | "pub" | "restaurante" | "cafe" | "balad";
 
 export type Perk = {
   id: string;

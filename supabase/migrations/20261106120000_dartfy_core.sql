@@ -19,7 +19,7 @@ grant usage on schema dartfy_private to authenticated, service_role;
 
 -- ── Tipos ───────────────────────────────────────────────────────────
 create type dartfy.gender         as enum ('feminino', 'masculino', 'outro', 'prefiro_nao_dizer');
-create type dartfy.venue_category as enum ('bar', 'pub', 'restaurante', 'cafe');
+create type dartfy.venue_category as enum ('bar', 'pub', 'restaurante', 'cafe', 'balad');
 create type dartfy.meet_status    as enum ('open', 'closed', 'paid', 'finished', 'cancelled');
 create type dartfy.guest_status   as enum ('invited', 'accepted', 'declined', 'checked_in');
 create type dartfy.guest_role     as enum ('host', 'guest');

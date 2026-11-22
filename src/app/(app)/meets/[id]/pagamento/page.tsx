@@ -21,9 +21,11 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
   if (!meet || meet.hostId !== user.id) notFound();
   if (meet.status !== "closed" || !meet.payment) redirect(`/meets/${id}`);
 
-  const { payment } = meet;
+  const current = meet.payment;
+  // Pix ainda sem QR (ex.: falha temporária no Mercado Pago): tenta gerar de novo. close_meet é idempotente.
+  const payment = current.pixCopyPaste || isDemoMode ? current : await repo().closeMeet(id, user.id).catch(() => current);
   const extra = Math.max(0, payment.people - pricing.includedPeople);
-  const qr = await qrSvg(payment.pixCopyPaste);
+  const qr = payment.pixCopyPaste ? await qrSvg(payment.pixCopyPaste) : null;
 
   return (
     <div className="space-y-5">
@@ -56,13 +58,20 @@ export default async function PaymentPage({ params }: { params: Promise<{ id: st
         </div>
       </dl>
 
-      <section className="surface space-y-4 p-5 text-center">
-        <div className="mx-auto w-52 rounded-2xl bg-white p-3" dangerouslySetInnerHTML={{ __html: qr }} />
-        <p className="flex items-center justify-center gap-2 text-sm text-alerta">
-          <span className="size-2 animate-pulse rounded-full bg-alerta" /> Aguardando pagamento
-        </p>
-        <CopyField value={payment.pixCopyPaste} />
-      </section>
+      {qr ? (
+        <section className="surface space-y-4 p-5 text-center">
+          <div className="mx-auto w-52 rounded-2xl bg-white p-3" dangerouslySetInnerHTML={{ __html: qr }} />
+          <p className="flex items-center justify-center gap-2 text-sm text-alerta">
+            <span className="size-2 animate-pulse rounded-full bg-alerta" /> Aguardando pagamento
+          </p>
+          <CopyField value={payment.pixCopyPaste} />
+        </section>
+      ) : (
+        <section className="surface space-y-2 p-5 text-center">
+          <p className="font-semibold">Pix indisponível no momento</p>
+          <p className="text-sm text-suave">Não conseguimos gerar o código Pix agora. Atualize a página em alguns instantes.</p>
+        </section>
+      )}
 
       {isDemoMode && (
         <div className="rounded-2xl border border-dashed border-alerta/40 p-4">
