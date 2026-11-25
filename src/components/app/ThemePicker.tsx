@@ -39,7 +39,7 @@ export function ThemePicker({ current }: { current: ThemeId }) {
               <span className="absolute inset-x-2.5 top-6 h-6 rounded-md" style={{ background: mid, border: `1px solid ${fg}22` }} />
               <span
                 className="absolute inset-x-2.5 bottom-2.5 h-4 rounded-md"
-                style={{ background: t.id === "dartfy" ? "linear-gradient(100deg,#ff2bd6,#8b5cf6,#5b7cfa)" : fg }}
+                style={{ background: t.id === "dartfy" ? "linear-gradient(100deg,#ff3fd0,#d046ff,#a24bff)" : fg }}
               />
               {active && (
                 <span className="absolute top-2 right-2 grid size-5 place-items-center rounded-full bg-texto text-noite">

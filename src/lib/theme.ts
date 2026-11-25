@@ -1,6 +1,6 @@
 /** Temas visuais do app (ver globals.css → TEMAS). */
 export const THEMES = [
-  { id: "dartfy", name: "Dartfy", description: "Neon noturno, a cara da marca.", swatch: ["#07061a", "#ff2bd6", "#5b7cfa"] },
+  { id: "dartfy", name: "Dartfy", description: "Neon noturno, a cara da marca.", swatch: ["#07051a", "#ff3fd0", "#3d8bff"] },
   { id: "darkfy", name: "Darkfy", description: "Escuro e minimalista, sem neon.", swatch: ["#0b0b0c", "#1e1e22", "#f4f4f5"] },
   { id: "whitefy", name: "Whitefy", description: "Claro e minimalista.", swatch: ["#ffffff", "#f4f4f5", "#18181b"] },
 ] as const;
@@ -15,4 +15,4 @@ export function parseTheme(v: string | undefined | null): ThemeId {
 }
 
 /** Cor da barra do navegador/sistema por tema. */
-export const THEME_COLOR: Record<ThemeId, string> = { dartfy: "#07061a", darkfy: "#0b0b0c", whitefy: "#ffffff" };
+export const THEME_COLOR: Record<ThemeId, string> = { dartfy: "#07051a", darkfy: "#0b0b0c", whitefy: "#ffffff" };

@@ -35,13 +35,18 @@ export async function updateSession(request: NextRequest) {
 
   if (isPrivate && !isAuthenticated) {
     const url = request.nextUrl.clone();
-    url.pathname = "/entrar";
     url.search = "";
-    url.searchParams.set("next", `${pathname}${search}`);
+    if (pathname === "/") {
+      // Visitante na raiz: tela de boas-vindas (splash).
+      url.pathname = "/bem-vindo";
+    } else {
+      url.pathname = "/entrar";
+      url.searchParams.set("next", `${pathname}${search}`);
+    }
     return NextResponse.redirect(url);
   }
 
-  if (pathname === "/entrar" && isAuthenticated) {
+  if ((pathname === "/entrar" || pathname === "/bem-vindo") && isAuthenticated) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     url.search = "";

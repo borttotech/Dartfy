@@ -130,17 +130,13 @@ export default async function HomePage() {
             { icon: IconUsers, t: "Feche a lista", d: `Pague ${formatBRL(pricing.baseCents)} no Pix e libere as cortesias.` },
             { icon: IconQr, t: "Check-in no bar", d: "Mostre o QR na chegada e aproveite." },
           ].map((s, i) => (
-            <li key={s.t} className="flex gap-3.5 p-4">
-              <span className="mt-0.5 shrink-0 text-apagado">
-                <s.icon size={18} />
-              </span>
-              <div>
-                <p className="font-semibold">
-                  <span className="mr-1.5 text-apagado">{i + 1}.</span>
-                  {s.t}
-                </p>
+            <li key={s.t} className="flex items-center gap-3.5 p-4">
+              <span className="neon-step size-10 shrink-0 text-sm">{String(i + 1).padStart(2, "0")}</span>
+              <div className="min-w-0 flex-1">
+                <p className="font-semibold">{s.t}</p>
                 <p className="text-sm text-suave">{s.d}</p>
               </div>
+              <s.icon size={22} strokeWidth={1.7} className="neon-icon shrink-0" />
             </li>
           ))}
         </ol>

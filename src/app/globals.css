@@ -1,31 +1,33 @@
 @import "tailwindcss";
 
 /*
- * Design system Dartfy — "noite neon"
- *   Fundo escuro azul-noite, o neon entra como ACENTO (CTA, foco, estados),
- *   nunca como fundo de tudo. Superfícies em camadas translúcidas.
+ * Design system Dartfy — "noite neon" (referência: Imagens/Dartfy — splash, logo e mockup)
+ *   Fundo quase preto com bokeh de bar; o neon entra como ACENTO (logo, CTA, foco, estados).
+ *   A logo vai do azul ao magenta: anil → violeta → neon.
  *
- *   neon     #ff2bd6  magenta da marca (CTA, destaque)
- *   violeta  #8b5cf6  meio do gradiente
- *   anil     #5b7cfa  fim do gradiente / links
+ *   neon     #ff3fd0  magenta da taça (CTA, destaque)
+ *   violeta  #a24bff  meio do gradiente
+ *   anil     #3d8bff  azul do "d" / links
+ *   ciano    #36d6ff  slogan
  *   ok       #34e5a0  confirmado, check-in, pago
  *   alerta   #ffb547  pendente
  *   erro     #ff5c7a  recusado / erro
  */
 @theme {
-  --color-noite: #07061a;
-  --color-breu: #0e0c27;
-  --color-superficie: #151236;
-  --color-elevado: #1d1945;
+  --color-noite: #07051a;
+  --color-breu: #0e0a26;
+  --color-superficie: #151034;
+  --color-elevado: #1e1744;
   --color-linha: rgb(255 255 255 / 0.08);
 
-  --color-texto: #f4f2ff;
-  --color-suave: #b4afd6;
-  --color-apagado: #7d78a3;
+  --color-texto: #f6f2ff;
+  --color-suave: #bab1dc;
+  --color-apagado: #7f78a6;
 
-  --color-neon: #ff2bd6;
-  --color-violeta: #8b5cf6;
-  --color-anil: #5b7cfa;
+  --color-neon: #ff3fd0;
+  --color-violeta: #a24bff;
+  --color-anil: #3d8bff;
+  --color-ciano: #36d6ff;
   --color-ok: #34e5a0;
   --color-alerta: #ffb547;
   --color-erro: #ff5c7a;
@@ -151,23 +153,65 @@
 }
 
 @layer components {
-  /* Gradiente da marca */
-  .bg-brand { background-image: linear-gradient(100deg, var(--color-neon) 0%, var(--color-violeta) 55%, var(--color-anil) 100%); }
+  /* Gradiente da marca: botão principal magenta → violeta (como o "Começar agora" da splash) */
+  .bg-brand { background-image: linear-gradient(100deg, var(--color-neon) 0%, #d046ff 55%, var(--color-violeta) 100%); }
+  /* Texto em gradiente na direção da logo: azul → violeta → magenta */
   .text-brand {
-    background-image: linear-gradient(100deg, var(--color-neon), var(--color-violeta) 50%, var(--color-anil));
+    background-image: linear-gradient(100deg, var(--color-anil), var(--color-violeta) 50%, var(--color-neon));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .glow-neon { box-shadow: 0 6px 18px -10px rgb(255 43 214 / 0.5); }
+  .glow-neon {
+    box-shadow:
+      inset 0 0 0 1px rgb(255 190 240 / 0.45),
+      0 0 18px -4px rgb(255 63 208 / 0.55),
+      0 10px 30px -12px rgb(162 75 255 / 0.7);
+  }
+
+  /* Slogan da marca: caixa alta espaçada em gradiente ciano → violeta → magenta */
+  .tagline {
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    line-height: 1.5;
+    background-image: linear-gradient(90deg, var(--color-ciano), #9b8cff 50%, var(--color-neon));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 10px rgb(162 75 255 / 0.45));
+  }
+  /* Ícone/traço neon (features da tela inicial, passos) */
+  .neon-icon { color: #ff7ce0; filter: drop-shadow(0 0 6px rgb(255 63 208 / 0.75)); }
+  /* Número em círculo com borda gradiente (passos 01–04 do mockup) */
+  .neon-step {
+    display: grid;
+    place-items: center;
+    border-radius: 9999px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-texto);
+    background:
+      linear-gradient(var(--color-noite), var(--color-noite)) padding-box,
+      linear-gradient(135deg, var(--color-anil), var(--color-violeta), var(--color-neon)) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: 0 0 14px -3px rgb(162 75 255 / 0.6);
+  }
 
   /* Temas minimalistas: cor sólida, sem gradiente nem brilho */
   [data-theme="darkfy"] .bg-brand,
   [data-theme="whitefy"] .bg-brand { background-image: none; background-color: var(--brand-fill); }
   [data-theme="darkfy"] .text-brand,
-  [data-theme="whitefy"] .text-brand { background-image: none; color: var(--color-texto); }
+  [data-theme="whitefy"] .text-brand,
+  [data-theme="darkfy"] .tagline,
+  [data-theme="whitefy"] .tagline { background-image: none; color: var(--color-texto); filter: none; }
   [data-theme="darkfy"] .glow-neon,
   [data-theme="whitefy"] .glow-neon { box-shadow: none; }
+  [data-theme="darkfy"] .neon-icon,
+  [data-theme="whitefy"] .neon-icon { color: var(--color-texto); filter: none; }
+  [data-theme="darkfy"] .neon-step,
+  [data-theme="whitefy"] .neon-step { background: transparent; border-color: var(--color-linha); box-shadow: none; }
   [data-theme="darkfy"] .ambient,
   [data-theme="whitefy"] .ambient { background: var(--color-noite); }
   .venue-cover { opacity: var(--cover-opacity, 1); }
@@ -194,11 +238,13 @@
     color: var(--color-apagado);
   }
 
-  /* Fundo ambiente do app: brilho neon discreto + linha do horizonte */
+  /* Fundo ambiente do app: bokeh de bar (foto da splash desfocada) + brilhos neon */
   .ambient {
     background:
-      radial-gradient(60% 40% at 15% 0%, rgb(255 43 214 / 0.16), transparent 70%),
-      radial-gradient(55% 35% at 100% 10%, rgb(91 124 250 / 0.16), transparent 70%),
+      radial-gradient(60% 40% at 10% 0%, rgb(61 139 255 / 0.18), transparent 70%),
+      radial-gradient(55% 35% at 100% 6%, rgb(255 63 208 / 0.2), transparent 70%),
+      linear-gradient(180deg, rgb(7 5 26 / 0.55) 0, var(--color-noite) 520px),
+      url("/brand/dartfy-ambient.jpg") top center / 100% 520px no-repeat,
       var(--color-noite);
   }
 
@@ -256,7 +302,7 @@
   .dartfy-pin.is-selected {
     transform: rotate(-45deg) scale(1.2);
     border-color: white;
-    box-shadow: 0 0 0 4px rgb(255 43 214 / 0.45), 0 10px 26px -6px rgb(255 43 214 / 0.8);
+    box-shadow: 0 0 0 4px rgb(255 63 208 / 0.45), 0 10px 26px -6px rgb(255 63 208 / 0.8);
   }
 
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.75rem); }

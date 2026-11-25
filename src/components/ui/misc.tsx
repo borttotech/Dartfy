@@ -98,35 +98,48 @@ export function Alert({ tone = "erro", children }: { tone?: "erro" | "ok" | "ale
 }
 
 /**
- * Logo oficial (ref/image.png). Padrão: escrita monocromática branca, mais sóbria no app.
- * Variações em public/brand: white (fundo escuro), dark (fundo claro), color (neon original, para peças de marketing).
+ * Logo oficial.
+ *  - Tema Dartfy: logo neon com fundo transparente (a partir de Imagens/Dartfy).
+ *  - Darkfy: escrita branca · Whitefy: escrita escura (public/brand/dartfy-wordmark-*.png).
  */
-const LOGO_RATIO = 233 / 63;
-const LOGO_SIZES = { sm: 22, md: 26, lg: 36 } as const;
+const LOGO_SIZES = { sm: 26, md: 30, lg: 44, xl: 76 } as const;
 
-/** Versão da logo por tema: Dartfy = neon colorida, Darkfy = branca, Whitefy = escura. */
+type LogoFile = { src: string; ratio: number; neon?: boolean };
+const LOGO_FILES = {
+  neon: { src: "/brand/dartfy-logo-neon.png", ratio: 1100 / 322, neon: true },
+  white: { src: "/brand/dartfy-wordmark-white.png", ratio: 932 / 252 },
+  dark: { src: "/brand/dartfy-wordmark-dark.png", ratio: 932 / 252 },
+  color: { src: "/brand/dartfy-wordmark-color.png", ratio: 932 / 252 },
+} satisfies Record<string, LogoFile>;
+
+/** Versão da logo por tema. */
 const LOGO_BY_THEME = [
-  { theme: "dartfy", file: "color" },
+  { theme: "dartfy", file: "neon" },
   { theme: "darkfy", file: "white" },
   { theme: "whitefy", file: "dark" },
 ] as const;
 
-export function Logo({ variant, size = "md", className = "" }: { variant?: "white" | "dark" | "color"; size?: keyof typeof LOGO_SIZES; className?: string }) {
+export function Logo({ variant, size = "md", className = "" }: { variant?: keyof typeof LOGO_FILES; size?: keyof typeof LOGO_SIZES; className?: string }) {
   const h = LOGO_SIZES[size];
-  const img = (file: string, extra = "") => (
-    <Image
-      key={file + extra}
-      src={`/brand/dartfy-wordmark-${file}.png`}
-      alt="Dartfy"
-      width={Math.round(h * LOGO_RATIO)}
-      height={h}
-      priority
-      className={`select-none ${extra}`}
-      style={{ height: h, width: "auto" }}
-    />
-  );
+  const img = (key: keyof typeof LOGO_FILES, extra = "") => {
+    const f: LogoFile = LOGO_FILES[key];
+    // A versão neon tem margem de brilho: um pouco mais alta para as letras ficarem do mesmo tamanho.
+    const height = f.neon ? Math.round(h * 1.15) : h;
+    return (
+      <Image
+        key={key + extra}
+        src={f.src}
+        alt="Dartfy"
+        width={Math.round(height * f.ratio)}
+        height={height}
+        priority
+        className={`select-none ${extra}`}
+        style={{ height, width: "auto", margin: f.neon ? `${Math.round((h - height) / 2)}px 0` : undefined }}
+      />
+    );
+  };
   return (
-    <span className={`inline-block shrink-0 self-start ${className}`} style={{ height: h }}>
+    <span className={`inline-block shrink-0 ${className}`} style={{ height: h }}>
       {variant ? img(variant, "block") : LOGO_BY_THEME.map((l) => img(l.file, `logo-variant logo-${l.theme}`))}
     </span>
   );

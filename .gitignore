@@ -8,3 +8,4 @@ next-env.d.ts
 
 # Arquivos temporários gerados ao compilar a configuração do Next
 *.next.config.*
+*.zip
